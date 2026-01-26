@@ -1,8 +1,13 @@
 import { CopilotClient } from "@github/copilot-sdk";
 import * as readline from "readline";
 import chalk from "chalk";
+import { marked } from "marked";
+import { markedTerminal } from "marked-terminal";
 
-const COPILOT_URL = "localhost:8080";
+const COPILOT_URL = "copilot-cli-server:4321";
+
+// Configure marked for terminal output with colors
+marked.use(markedTerminal());
 
 // Spinner for thinking animation
 const spinner = {
@@ -47,7 +52,20 @@ const spinner = {
   console.log(chalk.dim(`  URL: ${chalk.green(COPILOT_URL)}`));
   console.log();
 
-  const session = await client.createSession();
+  const session = await client.createSession({
+    systemMessage: {
+      content: `
+You are a helpful assistant working in a remote environment. The user cannot see files you create or modify directly. Therefore, when the user asks you to create or modify anything, you MUST:
+
+1. Always provide the complete content/code in your response
+2. Use markdown formatting (code blocks, lists, etc.) to make it clear and readable
+3. Never just say "I've created the file" or "I've modified it" - show the actual content
+4. Include explanations of what you created or changed
+5. If asked to create multiple files, show the content of each one
+
+Be direct and show the work, not just confirmations.`
+    },
+  });
 
   // Display session information
   console.log(chalk.blue("📋 Session Information:"));
@@ -83,9 +101,9 @@ const spinner = {
     const response = await session.sendAndWait({ prompt });
     spinner.stop();
 
-    console.log(
-      chalk.magenta.bold("🤖 Copilot: ") + `${response?.data.content}\n`,
-    );
+    const renderedContent = await marked(response?.data.content || "");
+    console.log(chalk.magenta.bold("🤖 Copilot:"));
+    console.log(renderedContent);
   }
 
   console.log();

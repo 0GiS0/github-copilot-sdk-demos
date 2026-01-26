@@ -1,0 +1,25 @@
+services:
+  app:
+    image: node:23-bookworm
+    volumes:
+      - ../..:/workspaces:cached
+    command: sleep infinity
+    networks:
+      - copilot
+    ports:
+      - "3000:3000"
+
+  copilot-cli-server:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    env_file:
+      - ../.env
+    environment:
+      - PORT=4321
+    networks:
+      - copilot
+    ports:
+      - "4321:4321"
+networks:
+  copilot:

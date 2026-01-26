@@ -1,11 +1,11 @@
-FROM node:20-bookworm
+FROM node:23-bookworm
 
 
 # Install GitHub Copilot CLI
 RUN npm install -g @github/copilot
 
 
-ENV PORT=8080
+ENV PORT=4321
 
 ENV GITHUB_TOKEN=""
 

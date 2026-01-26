@@ -1,0 +1,24 @@
+{
+	"name": "Copilot CLI Server Mode",
+	"dockerComposeFile": "compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-vscode.vscode-typescript-next",
+				"dbaeumer.vscode-eslint"
+			],
+			"settings": {
+				"[typescript]": {
+					"editor.formatOnSave": true
+				}
+			}
+		}
+	},
+	"postCreateCommand": "npm install",
+	"forwardPorts": [
+		8080,
+		3000
+	]
+}

@@ -4,10 +4,6 @@ import chalk from "chalk";
 
 const COPILOT_URL = "localhost:8080";
 
-const client = new CopilotClient({
-  cliUrl: COPILOT_URL,
-});
-
 // Spinner for thinking animation
 const spinner = {
   frames: ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"],
@@ -35,49 +31,65 @@ const spinner = {
   },
 };
 
-console.log();
-console.log(chalk.cyan("╔════════════════════════════════════════╗"));
-console.log(chalk.cyan("║     🚀 GitHub Copilot CLI Chat         ║"));
-console.log(chalk.cyan("╚════════════════════════════════════════╝"));
-console.log();
-console.log(chalk.dim(`Connected to: ${chalk.cyan(COPILOT_URL)}`));
-console.log();
-console.log(chalk.dim("Type your message and press Enter to chat."));
-console.log(chalk.dim("Type 'exit' or press Ctrl+C to quit.\n"));
+(async () => {
+  console.log();
+  console.log(chalk.cyan("╔════════════════════════════════════════╗"));
+  console.log(chalk.cyan("║     🚀 GitHub Copilot CLI Chat         ║"));
+  console.log(chalk.cyan("╚════════════════════════════════════════╝"));
+  console.log();
 
-const session = await client.createSession();
+  const client = new CopilotClient({
+    cliUrl: COPILOT_URL,
+  });
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+  // Display client information
+  console.log(chalk.green("🔌 Client Information:"));
+  console.log(chalk.dim(`  URL: ${chalk.green(COPILOT_URL)}`));
+  console.log();
 
-const askQuestion = (query: string): Promise<string> => {
-  return new Promise((resolve) => rl.question(query, resolve));
-};
+  const session = await client.createSession();
 
-while (true) {
-  const prompt = await askQuestion(chalk.green.bold("You: "));
-
-  if (!prompt.trim()) {
-    continue;
+  // Display session information
+  console.log(chalk.blue("📋 Session Information:"));
+  if (session.sessionId) {
+    console.log(chalk.dim(`  Session ID: ${chalk.blue(session.sessionId)}`));
   }
+  console.log();
+  console.log(chalk.dim("Type your message and press Enter to chat."));
+  console.log(chalk.dim("Type 'exit' or press Ctrl+C to quit.\n"));
 
-  if (prompt.toLowerCase() === "exit") {
-    break;
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  const askQuestion = (query: string): Promise<string> => {
+    return new Promise((resolve) => rl.question(query, resolve));
+  };
+
+  while (true) {
+    const prompt = await askQuestion(chalk.green.bold("You: "));
+
+    if (!prompt.trim()) {
+      continue;
+    }
+
+    if (prompt.toLowerCase() === "exit") {
+      break;
+    }
+
+    console.log();
+    spinner.start("Thinking...");
+    const response = await session.sendAndWait({ prompt });
+    spinner.stop();
+
+    console.log(
+      chalk.magenta.bold("🤖 Copilot: ") + `${response?.data.content}\n`,
+    );
   }
 
   console.log();
-  spinner.start("Thinking...");
-  const response = await session.sendAndWait({ prompt });
-  spinner.stop();
-
-  console.log(
-    chalk.magenta.bold("🤖 Copilot: ") + `${response?.data.content}\n`,
-  );
-}
-
-console.log();
-console.log(chalk.dim("👋 Goodbye!\n"));
-rl.close();
-await client.stop();
+  console.log(chalk.dim("👋 Goodbye!\n"));
+  rl.close();
+  await client.stop();
+})();

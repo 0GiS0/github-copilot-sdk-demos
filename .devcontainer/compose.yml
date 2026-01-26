@@ -1,6 +1,6 @@
 services:
   app:
-    image: node:23-bookworm
+    image: node:25-bookworm
     volumes:
       - ../..:/workspaces:cached
     command: sleep infinity

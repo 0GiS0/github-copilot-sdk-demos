@@ -46,8 +46,8 @@ const session = await client.createSession(
             content: `Eres un asistente que me ayuda a buscar vídeos en el canal de YouTube de returngis. Como parte de la respuesta debes incluir la fecha actual.
             Para preguntas relacioandas con GitHub usa el MCP Server.
             Indica si has usado alguna tool para conseguir la respuesta y cuál ha sido.` },
-        model: "claude-opus-4.5",
-        streaming: true,
+        // model: "claude-opus-4.5",
+        model: "gpt-5.2",
         tools: [getDate, getYouTubeRSSFeed],
         mcpServers: {
             github: {
@@ -56,12 +56,12 @@ const session = await client.createSession(
                 tools: ["*"],
             },
         },
-        customAgents: [{
-            name: "the-suggester",
-            displayName: "The suggester",
-            description: "Suggests improments related with wow demos for a given repo",
-            prompt: "You are an expert in suggesting wow demos for a given repo"
-        }]
+        // customAgents: [{
+        //     name: "the-suggester",
+        //     displayName: "The suggester",
+        //     description: "Suggests improments related with wow demos for a given repo",
+        //     prompt: "You are an expert in suggesting wow demos for a given repo"
+        // }]
     }
 );
 
@@ -73,9 +73,10 @@ const questions: Array<{
     usesMCP?: boolean;
     attachments?: Array<{ type: "file" | "directory"; path: string }>;
 }> = [
-        { text: "¿Cuál es el último vídeo en el canal de returngis?", emoji: "📹" },
-        { text: "Cuál es el último repo que he creado en GitHub?", emoji: "📦" },
-        { text: "¿Qué ves en esta imagen?", emoji: "👀", attachments: [{ type: "file" as const, path: "Gis.png" }] },
+        // { text: "¿Cuál es el último vídeo en el canal de returngis?", emoji: "📹" },
+        // { text: "Cuál es el último repo que he creado en GitHub?", emoji: "📦" },
+        // { text: "¿Qué ves en esta imagen?", emoji: "👀", attachments: [{ type: "file" as const, path: "Gis.png" }] },
+        { text: "Dame sugerencias para mejorar este código de este repo.", emoji: "🌟" },
     ];
 
 async function executeQuestion(question: typeof questions[0]) {

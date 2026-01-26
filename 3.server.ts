@@ -27,6 +27,7 @@ marked.use(markedTerminal());
   console.log();
 
   const session = await client.createSession({
+    streaming: true,
     systemMessage: {
       content: `
 You are a helpful assistant working in a remote environment. The user cannot see files you create or modify directly. Therefore, when the user asks you to create or modify anything, you MUST:
@@ -72,12 +73,32 @@ Be direct and show the work, not just confirmations.`
 
     console.log();
     const spinner = ora("Thinking...").start();
-    const response = await session.sendAndWait({ prompt });
-    spinner.stop();
 
-    const renderedContent = await marked(response?.data.content || "");
-    console.log(chalk.magenta.bold("🤖 Copilot:"));
-    console.log(renderedContent);
+    let fullContent = "";
+
+    // Wait for completion using session.idle event
+    const done = new Promise<void>((resolve) => {
+      session.on((event) => {
+        if (event.type === "assistant.message_delta") {
+          // Streaming message chunk - print incrementally
+          if (spinner.isSpinning) {
+            spinner.stop();
+          }
+          if (fullContent === "") {
+            console.log(chalk.magenta.bold("🤖 Copilot:"));
+          }
+          process.stdout.write(event.data.deltaContent);
+          fullContent += event.data.deltaContent;
+        } else if (event.type === "session.idle") {
+          // Session finished processing
+          console.log();
+          resolve();
+        }
+      });
+    });
+
+    await session.send({ prompt });
+    await done;
   }
 
   console.log();

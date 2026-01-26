@@ -3,38 +3,12 @@ import * as readline from "readline";
 import chalk from "chalk";
 import { marked } from "marked";
 import { markedTerminal } from "marked-terminal";
+import ora from "ora";
 
 const COPILOT_URL = "copilot-cli-server:4321";
 
 // Configure marked for terminal output with colors
 marked.use(markedTerminal());
-
-// Spinner for thinking animation
-const spinner = {
-  frames: ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"],
-  interval: 80,
-  currentFrame: 0,
-  timer: null as NodeJS.Timeout | null,
-
-  start(message: string) {
-    this.currentFrame = 0;
-    process.stdout.write(chalk.yellow(`${this.frames[0]} ${message}`));
-    this.timer = setInterval(() => {
-      this.currentFrame = (this.currentFrame + 1) % this.frames.length;
-      process.stdout.write(
-        `\r${chalk.yellow(`${this.frames[this.currentFrame]} ${message}`)}`,
-      );
-    }, this.interval);
-  },
-
-  stop() {
-    if (this.timer) {
-      clearInterval(this.timer);
-      this.timer = null;
-    }
-    process.stdout.write("\r\x1b[K"); // Clear line
-  },
-};
 
 (async () => {
   console.log();
@@ -97,7 +71,7 @@ Be direct and show the work, not just confirmations.`
     }
 
     console.log();
-    spinner.start("Thinking...");
+    const spinner = ora("Thinking...").start();
     const response = await session.sendAndWait({ prompt });
     spinner.stop();
 

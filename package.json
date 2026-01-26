@@ -1,13 +1,15 @@
 {
-  "name": "github-copilot-cli-server-mode",
+  "name": "github-copilot-sdk-demos",
   "version": "1.0.0",
-  "description": "Vamos a generar la imagen:",
+  "description": "Demos para entender GitHub Copilot SDK",
   "main": "index.js",
   "scripts": {
-    "start": "node index.ts"
+    "start": "node 0.basic.ts",
+    "agents": "node 1.agents.ts",
+    "external-server": "node 3.server.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "Gisela Torres",
   "license": "ISC",
   "type": "module",
   "dependencies": {

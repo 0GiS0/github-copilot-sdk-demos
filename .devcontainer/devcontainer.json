@@ -7,7 +7,9 @@
 		"vscode": {
 			"extensions": [
 				"ms-vscode.vscode-typescript-next",
-				"dbaeumer.vscode-eslint"
+				"dbaeumer.vscode-eslint",
+				"GitHub.copilot",
+				"GitHub.copilot-chat"
 			],
 			"settings": {
 				"[typescript]": {
@@ -27,5 +29,5 @@
 		"ghcr.io/devcontainers/features/azure-cli:1": {},
 		"ghcr.io/devcontainers/features/github-cli:1": {}
 	},
-	"remoteUser": "root"
+	"postStartCommand": "npm install -g @github/copilot"
 }

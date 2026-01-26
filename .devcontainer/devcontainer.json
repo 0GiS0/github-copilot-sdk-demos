@@ -1,5 +1,5 @@
 {
-	"name": "Copilot CLI Server Mode",
+	"name": "🤖 Copilot CLI Server Mode",
 	"dockerComposeFile": "compose.yml",
 	"service": "app",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
@@ -11,7 +11,8 @@
 			],
 			"settings": {
 				"[typescript]": {
-					"editor.formatOnSave": true
+					"editor.formatOnSave": true,
+					"editor.defaultFormatter": "vscode.typescript-language-features"
 				}
 			}
 		}
@@ -19,6 +20,12 @@
 	"postCreateCommand": "npm install",
 	"forwardPorts": [
 		8080,
-		3000
-	]
+		3000,
+		4321
+	],
+	"features": {
+		"ghcr.io/devcontainers/features/azure-cli:1": {},
+		"ghcr.io/devcontainers/features/github-cli:1": {}
+	},
+	"remoteUser": "root"
 }

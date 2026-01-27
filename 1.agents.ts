@@ -1,32 +1,4 @@
-/**
- * ✨ Chat demo del GitHub Copilot SDK
- *
- * 💬 Preguntas de ejemplo (copia y pega):
- * - ¿Cuál es el último vídeo en el canal de returngis que no sea un short?
- * - Dame sugerencias para mejorar este código de este repo.
- * - ¿Cuál es el último repo que he creado en GitHub?
- * - ¿Qué ves en esta imagen? #Gis.png
- * 
- * 🎮 Comandos disponibles:
- * - /help  → Muestra ayuda y herramientas disponibles
- * - /exit  → Sale del chat
- */
-
-// ═══════════════════════════════════════════════════════════════════════════
-// 🔐 VALIDACIÓN DE ENTORNO
-// ═══════════════════════════════════════════════════════════════════════════
-// Verificamos que las variables de entorno necesarias estén configuradas
-// antes de continuar. Esto evita errores crípticos más adelante.
-if (!process.env.GH_TOKEN && !process.env.GITHUB_TOKEN) {
-    console.error("\n❌ ERROR: No se encontró token de GitHub");
-    console.error("\n📋 Para solucionar esto, configura una de estas variables de entorno:");
-    console.error("   • GH_TOKEN=tu_token_aqui");
-    console.error("   • GITHUB_TOKEN=tu_token_aqui");
-    console.error("\n💡 Puedes obtener un token en: https://github.com/settings/tokens");
-    console.error("   Asegúrate de que tenga el scope 'copilot'\n");
-    process.exit(1);
-}
-
+// 📦 Modulos y dependencias
 import { marked } from "marked";
 import { markedTerminal } from "marked-terminal"
 import { CopilotClient, defineTool, SessionConfig } from "@github/copilot-sdk";

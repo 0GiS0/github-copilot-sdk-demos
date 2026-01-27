@@ -4,9 +4,9 @@
   "description": "Demos para entender GitHub Copilot SDK",
   "main": "index.js",
   "scripts": {
-    "start": "node 0.basic.ts",
-    "agents": "node 1.agents.ts",
-    "external-server": "node 3.server.ts"
+    "start": "npx tsx 0.basic.ts",
+    "agents": "npx tsx 1.agents.ts",
+    "external-server": "npx tsx 3.server.ts"
   },
   "keywords": [],
   "author": "Gisela Torres",
@@ -20,6 +20,8 @@
     "ora": "^9.1.0"
   },
   "devDependencies": {
-    "@types/node": "^25.0.10"
+    "@types/marked-terminal": "^6.1.1",
+    "@types/node": "^25.0.10",
+    "tsx": "^4.7.0"
   }
 }

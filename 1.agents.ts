@@ -116,7 +116,7 @@ IMPORTANTE: Cuando uses las tools 'list_available_models' o 'list_active_session
         filesystem: {
             type: "local",
             command: "npx",
-            args: ["-y", "@modelcontextprotocol/server-filesystem", "/workspaces/github-copilot-cli-server-mode/images"],
+            args: ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"],
             tools: ["*"],
         }
     },

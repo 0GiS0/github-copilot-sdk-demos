@@ -1,4 +1,4 @@
-# GitHub Copilot CLI Remoto
+# 🤖 GitHub Copilot SDK Demos
 
 <div align="center">
 
@@ -11,10 +11,10 @@
 
 ---
 
-¡Hola developer 👋🏻! En este proyecto te enseño cómo llevar GitHub Copilot CLI a cualquier lugar exponiendo un servidor remoto accesible desde tu máquina local. Con esta solución, puedes interactuar con Copilot a través de una interfaz CLI interactiva, todo conectado a través de una URL remota.
+¡Hola developer 👋🏻! Colección completa de ejemplos prácticos para dominar el **GitHub Copilot SDK**. Desde demos básicas hasta chatbots interactivos con agents y conexiones remotas a servidores de Copilot CLI. Aprenderás cómo usar herramientas personalizadas (tools), MCP servers, streaming en tiempo real y mucho más.
 
 <a href="https://youtu.be/VIDEO_CODE">
- <img src="https://img.youtube.com/vi/VIDEO_CODE/maxresdefault.jpg" alt="GitHub Copilot CLI remoto" width="100%" />
+ <img src="https://img.youtube.com/vi/VIDEO_CODE/maxresdefault.jpg" alt="GitHub Copilot SDK Demos" width="100%" />
 </a>
 
 > **Nota:** Reemplaza `VIDEO_CODE` con el código de tu vídeo de YouTube
@@ -23,25 +23,101 @@
 
 ## 📑 Tabla de Contenidos
 
+- [Demos Disponibles](#-demos-disponibles)
 - [Características](#características)
 - [Tecnologías](#tecnologías)
 - [Requisitos Previos](#requisitos-previos)
 - [Instalación](#instalación)
 - [Uso](#uso)
 - [Estructura del Proyecto](#estructura-del-proyecto)
-- [Despliegue](#despliegue)
+- [Conceptos Clave](#-conceptos-clave)
 - [Sígueme](#sígueme-en-mis-redes-sociales)
 
 ---
 
-## ✨ Características
+## 🎬 Demos Disponibles
+
+### 1️⃣ **0.basic.ts** - Demo Básica
+
+Ejemplo simple para entender los fundamentos del SDK:
+
+- ✅ Crear una sesión de Copilot
+- ✅ Enviar un prompt y esperar respuesta
+- ✅ Retomar sesiones usando Session ID
+- ✅ Manejo correcto de limpieza de recursos
+
+**Comandos:**
+
+```bash
+npm start
+```
+
+**Ideal para:** Principiantes que quieren aprender lo básico del SDK.
+
+---
+
+### 2️⃣ **1.agents.ts** - Chat Interactivo con Tools y MCP Servers
+
+Demo avanzada con interactividad completa:
+
+- 🛠️ **Custom Tools** - Define tus propias herramientas (get_utc_date, get_youtube_feed)
+- 📡 **MCP Servers** - Integra múltiples servidores MCP:
+  - `filesystem` - Acceso a archivos locales
+  - `github` - Interactúa con la API de GitHub
+- 💬 **Chat Loop** - Loop interactivo manteniendo contexto
+- ⚡ **Streaming** - Respuestas en tiempo real
+- 🔄 **Event Listeners** - Maneja eventos de sesión
+
+**Comandos:**
+
+```bash
+npm run agents
+```
+
+**Características:**
+
+- Preguntas sobre videos de YouTube
+- Sugerencias para mejorar código
+- Acceso a información de GitHub
+- Mantiene el contexto entre preguntas
+
+**Ideal para:** Usuarios avanzados que quieren crear chatbots con capacidades extendidas.
+
+---
+
+### 3️⃣ **3.server.ts** - Remote GitHub Copilot CLI
+
+Conexión a un servidor Copilot CLI remoto:
+
+- 🌐 Conexión vía HTTP a servidor remoto
+- 📤 Streaming en tiempo real
+- ✨ Chat interactivo con eventos en vivo
+- 🏗️ Arquitectura cliente-servidor
+
+**Comandos:**
+
+```bash
+npm run external-server
+```
+
+**Requisitos:**
+
+- Servidor Copilot CLI corriendo en `copilot-cli-server:4321`
+- Para desarrollo local en VS Code: Usar Dev Container
+- Para Docker: Ajustar URL a `localhost` si es local
+
+**Ideal para:** Entornos de producción donde quieres separar cliente y servidor.
+
+---
+
+## ✨ Características Comunes
 
 - 🚀 **CLI Interactiva** - Chat en tiempo real con GitHub Copilot desde tu terminal
-- 🌍 **Remota** - Expone Copilot CLI desde cualquier ubicación mediante URL
-- 🎨 **Interfaz Bonita** - Output con colores y spinner animado mientras procesa
-- 🐳 **Containerizada** - Fácil de desplegar con Docker
-- 🔄 **Loop Interactivo** - Mantiene la sesión activa para múltiples preguntas
-- 📊 **Información de Conexión** - Muestra la URL y puerto conectado
+- 🎨 **Interfaz Bonita** - Output con colores, emojis y spinners animados
+- 📚 **Bien Comentada** - Código con comentarios en español y emojis explicativos
+- 🔄 **Loop Interactivo** - Mantiene sesiones activas para múltiples preguntas
+- 📊 **Información de Conexión** - Muestra estado y detalles de la sesión
+- 🛠️ **Extensible** - Crea tus propias tools y agents
 
 ---
 
@@ -64,180 +140,55 @@
 
 ---
 
-## 🚀 Instalación y Uso
+## 🚀 Instalación
 
 ### Paso 1: Clonar el repositorio
 
 ```bash
-git clone https://github.com/0GiS0/github-copilot-cli-server-mode.git
-cd github-copilot-cli-server-mode
+git clone https://github.com/0GiS0/github-copilot-sdk-demos.git
+cd github-copilot-sdk-demos
 ```
 
-### Paso 2: Configurar variables de entorno
-
-```bash
-cp .env.example .env
-```
-
-Edita `.env` y añade tu `GITHUB_TOKEN`:
-
-```bash
-GITHUB_TOKEN=your_github_token_here
-```
-
-### Paso 3: Iniciar el servidor Docker con Copilot CLI
-
-En una terminal, construye la imagen Docker:
-
-```bash
-docker build -t github-copilot-cli-server-mode:latest .
-```
-
-Luego, ejecuta el contenedor pasando tu token de GitHub:
-
-```bash
-docker run --name copilot-cli \
-  --env-file .env \
-  -p 8080:8080 \
-  --rm \
-  github-copilot-cli-server-mode:latest
-```
-
-Deberías ver algo como:
-
-```
-2026-01-26 10:30:45 INFO: Server listening on port 8080
-2026-01-26 10:30:45 INFO: GitHub Copilot CLI is ready
-```
-
-### Paso 4: En otra terminal, instalar dependencias de Node.js
+### Paso 2: Instalar dependencias
 
 ```bash
 npm install
 ```
 
-### Paso 5: Ejecutar la aplicación cliente
+### Paso 3: Configurar variables de entorno (para demos con MCP GitHub)
 
 ```bash
-npm start
+cp .env.example .env
 ```
 
-La aplicación verificará automáticamente que el servidor Docker esté disponible y luego iniciará el chat interactivo.
+Edita `.env` y añade tu `GH_TOKEN` (token de GitHub con permisos necesarios):
+
+```bash
+GH_TOKEN=your_github_token_here
+```
 
 ---
 
 ## 💻 Uso
 
-La primera vez que ejecutes la app, verá algo así:
+Elige qué demo quieres ejecutar:
 
-```
-╔════════════════════════════════════════╗
-║     🚀 GitHub Copilot CLI Chat         ║
-╚════════════════════════════════════════╝
-
-Checking connection to: localhost:8080
-✓ Copilot server is available (Status: 200)
-
-Connected to: localhost:8080
-
-Type your message and press Enter to chat.
-Type 'exit' or press Ctrl+C to quit.
-
-You:
-```
-
-Luego puedes hacer preguntas a Copilot:
+### Ejecutar Demo Básica
 
 ```bash
-You: ¿Cuál es la capital de Francia?
-⠋ Thinking...
-🤖 Copilot: La capital de Francia es París, ubicada en el norte de Francia...
-
-You: Crea una función en JavaScript que ordene un array
-⠋ Thinking...
-🤖 Copilot: Aquí tienes una función que ordena un array...
-
-You: exit
-👋 Goodbye!
-```
-
----
-
-### Flujo de Ejecución
-
-```
-┌─────────────────────────────┐
-│ Terminal 1: Docker Server   │
-├─────────────────────────────┤
-│ $ docker run ...            │
-│ Server listening on 8080    │
-│ Ready for connections ✓     │
-└─────────────────────────────┘
-           ↓ (conexión)
-┌─────────────────────────────┐
-│ Terminal 2: Node.js Client  │
-├─────────────────────────────┤
-│ $ npm start                 │
-│ Connecting to localhost...  │
-│ Ready for questions ✓       │
-└─────────────────────────────┘
-```
-
----
-
-## 🐳 Despliegue
-
-### Desplegar Localmente con Docker
-
-Ya lo cubrimos en los pasos de instalación, pero aquí está el resumen:
-
-```bash
-# Terminal 1: Construir y ejecutar el servidor Docker
-docker build -t github-copilot-cli-server-mode:latest .
-docker run --name copilot-cli \
-  --env-file .env \
-  -p 8080:8080 \
-  --rm \
-  github-copilot-cli-server-mode:latest
-
-# Terminal 2: Ejecutar la aplicación cliente
 npm start
 ```
 
-### Detener los Contenedores
-
-Para detener el contenedor Docker, simplemente presiona `Ctrl+C` en la terminal donde se ejecuta.
-
-### Desplegar en Azure
-
-Para desplegar en Azure Container Instances:
+### Ejecutar Chat con Agents
 
 ```bash
-# Logearse en Azure
-az login
-
-# Crear un registro de contenedores (si no existe)
-az acr create --resource-group mi-grupo --name miacr --sku Basic
-
-# Construir la imagen en Azure
-az acr build --registry miacr --image github-copilot-cli:latest .
-
-# Desplegar la imagen
-az container create \
-  --resource-group mi-grupo \
-  --name copilot-cli \
-  --image miacr.azurecr.io/github-copilot-cli:latest \
-  --ports 8080 \
-  --environment-variables GITHUB_TOKEN='your_token_here' \
-  --registry-login-server miacr.azurecr.io \
-  --registry-username <username> \
-  --registry-password <password>
+npm run agents
 ```
 
-Luego, desde tu máquina local, conecta modificando `COPILOT_URL` en `index.ts`:
+### Ejecutar Cliente Remoto
 
-```typescript
-const COPILOT_URL = "your-azure-instance.eastus.azurecontainer.io:8080";
+```bash
+npm run external-server
 ```
 
 ---
@@ -245,21 +196,85 @@ const COPILOT_URL = "your-azure-instance.eastus.azurecontainer.io:8080";
 ## 📁 Estructura del Proyecto
 
 ```
-github-copilot-cli-server-mode/
-├── index.ts                 # Aplicación cliente con CLI interactiva
-├── package.json             # Dependencias del proyecto
-├── tsconfig.json            # Configuración de TypeScript
-├── Dockerfile               # Servidor Copilot CLI en Docker
-├── .env.example             # Variables de entorno de ejemplo
-├── .gitignore              # Archivos ignorados por git
-└── README.md               # Este archivo
+github-copilot-sdk-demos/
+├── 0.basic.ts              # 📚 Demo básica - Fundamentos del SDK
+├── 1.agents.ts             # 🤖 Demo avanzada - Chat con tools y MCP servers
+├── 3.server.ts             # 🌐 Demo remota - Cliente que se conecta a servidor
+├── package.json            # 📦 Dependencias del proyecto
+├── tsconfig.json           # ⚙️ Configuración de TypeScript
+├── Dockerfile              # 🐳 Para ejecutar en Docker
+├── .env.example            # 🔑 Variables de entorno de ejemplo
+├── .gitignore              # 🚫 Archivos ignorados por git
+└── README.md               # 📖 Este archivo
 ```
 
-### Archivos Principales
+### Descripción de Archivos
 
-- **index.ts** - Aplicación Node.js que se conecta al servidor Docker y proporciona una interfaz CLI interactiva con Copilot
-- **Dockerfile** - Contenedor que ejecuta Copilot CLI en modo servidor en el puerto 8080
-- **.env** - Contiene `GITHUB_TOKEN` necesario para autenticar con Copilot
+| Archivo          | Descripción                                             |
+| ---------------- | ------------------------------------------------------- |
+| **0.basic.ts**   | Ejemplo simple para aprender los fundamentos            |
+| **1.agents.ts**  | Chat interactivo con custom tools y MCP servers         |
+| **3.server.ts**  | Cliente que se conecta a servidor remoto de Copilot CLI |
+| **package.json** | Scripts: `start`, `agents`, `external-server`           |
+
+---
+
+## 💡 Conceptos Clave
+
+### 📌 Session ID
+
+Cada sesión tiene un ID único que permite retomar la conversación más adelante:
+
+```typescript
+const sessionId = session.sessionId;
+// Guardar para usar después
+const resumedSession = await client.resumeSession(sessionId);
+```
+
+### 🛠️ Custom Tools (Herramientas)
+
+Define funciones que Copilot puede llamar:
+
+```typescript
+const myTool = defineTool("tool_name", {
+  description: "Descripción de qué hace",
+  parameters: {
+    /* ... */
+  },
+  handler: async (params) => {
+    /* implementación */
+  },
+});
+```
+
+### 📡 MCP Servers (Model Context Protocol)
+
+Integra servidores externos para ampliar capacidades:
+
+- `filesystem` - Acceso a archivos
+- `github` - Operaciones en GitHub
+- Puedes crear los tuyos propios
+
+### ⚡ Streaming
+
+Las respuestas llegan token por token, no todas de una vez:
+
+```typescript
+streaming: true; // Habilitado por defecto en 3.server.ts
+```
+
+### 🎧 Event Listeners
+
+Escucha eventos de la sesión:
+
+- `assistant.message_delta` - Nuevo chunk de respuesta
+- `session.idle` - Sesión terminó de procesar
+- `session.error` - Error durante el procesamiento
+
+### 🔄 session.send() vs session.sendAndWait()
+
+- `send()` - No bloquea, maneja con event listeners (usado en 3.server.ts)
+- `sendAndWait()` - Bloquea hasta obtener respuesta (usado en 0.basic.ts y 1.agents.ts)
 
 ---
 

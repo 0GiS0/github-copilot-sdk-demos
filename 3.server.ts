@@ -1,34 +1,58 @@
-import { CopilotClient } from "@github/copilot-sdk";
-import * as readline from "readline";
-import chalk from "chalk";
-import { marked } from "marked";
-import { markedTerminal } from "marked-terminal";
-import ora from "ora";
+/**
+ * 🖥️ GitHub Copilot CLI Server Mode Demo
+ *
+ * 📝 Este script demuestra cómo usar el GitHub Copilot SDK en modo servidor.
+ * En este modo, el cliente se conecta a un servidor Copilot CLI que corre
+ * como un proceso separado (normalmente en Docker o localmente).
+ *
+ * 🔑 Diferencias con el modo normal:
+ * - El cliente se conecta a una URL en vez de usar la autenticación directa
+ * - Útil para entornos donde no tienes acceso directo al token de GitHub
+ * - Permite compartir una instancia del servidor entre múltiples clientes
+  
+ */
 
+// 📦 Importaciones necesarias
+import { CopilotClient } from "@github/copilot-sdk"; // 🤖 Cliente del SDK de Copilot
+import * as readline from "readline"; // ⌨️ Para leer entrada del usuario en la terminal
+import chalk from "chalk"; // 🎨 Colores bonitos para la terminal
+import { marked } from "marked"; // 📄 Parser de Markdown
+import { markedTerminal } from "marked-terminal"; // 🖥️ Renderiza Markdown en la terminal
+import ora from "ora"; // 🔄 Spinners animados para mostrar que estamos esperando
+
+// 🌐 URL del servidor Copilot CLI (Docker o local)
+// ⚠️ Para esta demo necesitas el Dev Container si o si o bien ejecutarlo dentro de un contenedor de Docker y ajustar la url a localhost y el puerto adecuado
 const COPILOT_URL = "copilot-cli-server:4321";
 
-// Configure marked for terminal output with colors
+// 🎨 Configura marked para renderizar Markdown con colores en la terminal
 marked.use(markedTerminal());
 
+// 🚀 Función principal auto-ejecutable (IIFE async)
 (async () => {
+  // 🎉 Banner de bienvenida
   console.log();
   console.log(chalk.cyan("╔════════════════════════════════════════╗"));
-  console.log(chalk.cyan("║     🚀 GitHub Copilot CLI Chat         ║"));
+  console.log(chalk.cyan("║   🚀 Remote GitHub Copilot CLI Chat    ║"));
   console.log(chalk.cyan("╚════════════════════════════════════════╝"));
   console.log();
 
+  // 🔧 Crea el cliente de Copilot apuntando al servidor remoto
+  // 📡 A diferencia del modo normal, aquí usamos cliUrl en vez de logLevel
   const client = new CopilotClient({
-    cliUrl: COPILOT_URL,
+    cliUrl: COPILOT_URL, // 🎯 Conexión al servidor CLI
   });
 
-  // Display client information
-  console.log(chalk.green("🔌 Client Information:"));
+  // 📊 Muestra información del cliente conectado
+  console.log(chalk.green("🔌 Información del Cliente:"));
   console.log(chalk.dim(`  URL: ${chalk.green(COPILOT_URL)}`));
   console.log();
 
+  // 🧵 Crea una sesión de chat con streaming habilitado
+  // 💡 streaming: true permite recibir la respuesta token por token
   const session = await client.createSession({
-    streaming: true,
+    streaming: true, // ⚡ Habilita respuestas en tiempo real (token a token)
     systemMessage: {
+      // 🧠 Mensaje del sistema que define el comportamiento del asistente
       content: `
 You are a helpful assistant working in a remote environment. The user cannot see files you create or modify directly. Therefore, when the user asks you to create or modify anything, you MUST:
 
@@ -38,71 +62,92 @@ You are a helpful assistant working in a remote environment. The user cannot see
 4. Include explanations of what you created or changed
 5. If asked to create multiple files, show the content of each one
 
-Be direct and show the work, not just confirmations.`
+Be direct and show the work, not just confirmations.`,
     },
   });
 
-  // Display session information
-  console.log(chalk.blue("📋 Session Information:"));
+  // 📋 Muestra información de la sesión creada
+  console.log(chalk.blue("📋 Información de la Sesión:"));
   if (session.sessionId) {
+    // 🆔 El sessionId permite retomar la conversación más tarde
     console.log(chalk.dim(`  Session ID: ${chalk.blue(session.sessionId)}`));
   }
   console.log();
-  console.log(chalk.dim("Type your message and press Enter to chat."));
-  console.log(chalk.dim("Type 'exit' or press Ctrl+C to quit.\n"));
+  console.log(chalk.dim("Escribe tu mensaje y presiona Enter para chatear."));
+  console.log(chalk.dim("Escribe 'exit' o presiona Ctrl+C para salir.\n"));
 
+  // ⌨️ Configura readline para leer entrada del usuario
   const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
+    input: process.stdin, // 📥 Lee del stdin
+    output: process.stdout, // 📤 Escribe al stdout
   });
 
+  // 🎁 Helper: Promisifica readline.question para usar con async/await
   const askQuestion = (query: string): Promise<string> => {
     return new Promise((resolve) => rl.question(query, resolve));
   };
 
+  // 🔁 Loop principal del chat - se ejecuta hasta que el usuario escriba "exit"
   while (true) {
+    // ❓ Pide input al usuario
     const prompt = await askQuestion(chalk.green.bold("You: "));
 
+    // ⏭️ Si el usuario presiona Enter sin escribir nada, continúa
     if (!prompt.trim()) {
       continue;
     }
 
+    // 🚪 Si el usuario escribe "exit", sale del loop
     if (prompt.toLowerCase() === "exit") {
       break;
     }
 
     console.log();
-    const spinner = ora("Thinking...").start();
+    // 🔄 Muestra un spinner mientras esperamos la respuesta
+    const spinner = ora("Pensando...").start();
 
+    // 📝 Acumula el contenido de la respuesta conforme llega
     let fullContent = "";
 
-    // Wait for completion using session.idle event
+    // 🎧 Configura el listener de eventos para manejar la respuesta en streaming
+    // 💡 Usamos una Promise para esperar a que termine la respuesta completa
     const done = new Promise<void>((resolve) => {
       session.on((event) => {
+        // 🔀 Switch implícito por tipo de evento
         if (event.type === "assistant.message_delta") {
-          // Streaming message chunk - print incrementally
+          // 📨 Evento: Llegó un chunk de la respuesta (streaming)
+          // 🛑 Detiene el spinner cuando empezamos a recibir contenido
           if (spinner.isSpinning) {
             spinner.stop();
           }
+          // 🏷️ Muestra el header solo la primera vez
           if (fullContent === "") {
             console.log(chalk.magenta.bold("🤖 Copilot:"));
           }
+          // ✍️ Escribe el chunk directamente (sin salto de línea)
+          // 📺 Esto crea el efecto de "typing" en tiempo real
           process.stdout.write(event.data.deltaContent);
           fullContent += event.data.deltaContent;
         } else if (event.type === "session.idle") {
-          // Session finished processing
+          // ✅ Evento: La sesión terminó de procesar
+          // 🎬 Resolvemos la Promise para continuar con el loop
           console.log();
           resolve();
         }
       });
     });
 
+    // 📤 Envía el prompt al servidor (no esperamos respuesta directa)
     await session.send({ prompt });
+    // ⏳ Espera a que termine el streaming completo
     await done;
   }
 
+  // 👋 Mensaje de despedida
   console.log();
-  console.log(chalk.dim("👋 Goodbye!\n"));
+  console.log(chalk.dim("👋 ¡Hasta luego!\n"));
+
+  // 🧹 Limpieza: cierra readline y detiene el cliente
   rl.close();
   await client.stop();
 })();

@@ -78,32 +78,60 @@ const getYouTubeRSSFeedTool = defineTool("get_youtube_feed", {
     },
 });
 
+// 🤖 Tool que lista los modelos disponibles en el cliente Copilot
+const listAvailableModelsTool = defineTool("list_available_models", {
+    description: "Lista todos los modelos disponibles en el cliente Copilot con sus características, límites y información de billing.",
+    parameters: {
+        type: "object",
+        properties: {},
+    },
+    handler: async () => {
+        const models = await copilotClient.listModels();
+        return JSON.stringify(models, null, 2);
+    },
+});
+
+// 💬 Tool que lista las sesiones activas del cliente Copilot
+const listActiveSessionsTool = defineTool("list_active_sessions", {
+    description: "Lista todas las sesiones activas en el cliente Copilot con información sobre el resumen de cada sesión.",
+    parameters: {
+        type: "object",
+        properties: {},
+    },
+    handler: async () => {
+        const sessions = await copilotClient.listSessions();
+        return JSON.stringify(sessions, null, 2);
+    },
+});
+
 // 🤖 Cliente Copilot 
 const copilotClient = new CopilotClient({ logLevel: "all" });
 
-const GH_TOKEN = process.env.GH_TOKEN;
+copilotClient.start().then(() => {
+    console.log(chalk.green("✓ Cliente Copilot iniciado correctamente"));
+});
 
 // ⚙️ Opciones de sesión (educativo: aquí puedes jugar con todo)
 const sessionOptions: SessionConfig = {
     systemMessage: {
         content: `Eres un asistente que me ayuda a buscar vídeos en el canal de YouTube de returngis. Como parte de la respuesta debes incluir la fecha actual si te preguntan sobre videos.
-Para preguntas relacionadas con GitHub usa el MCP Server. Indica si has usado alguna tool para conseguir la respuesta y cuál ha sido.`,
+Para preguntas relacionadas con GitHub usa el MCP Server. Indica si has usado alguna tool para conseguir la respuesta y cuál ha sido.
+
+IMPORTANTE: Cuando uses las tools 'list_available_models' o 'list_active_sessions', formatea la respuesta de manera clara y visual con emojis. NO uses markdown (no uses # ni **). Estructura la información de forma que sea fácil de leer en una terminal. Omite fechas y horas en la información de sesiones.`,
     },
     model: DEFAULT_MODEL,
-    tools: [getUtcDateTool, getYouTubeRSSFeedTool],
+    tools: [getUtcDateTool, getYouTubeRSSFeedTool, listAvailableModelsTool, listActiveSessionsTool],
     mcpServers: {
         filesystem: {
             type: "local",
             command: "npx",
-            args: ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"],
+            args: ["-y", "@modelcontextprotocol/server-filesystem", "/workspaces/github-copilot-cli-server-mode"],
             tools: ["*"],
         },
         // Remote MCP server (HTTP)
-        "github": {
+        github: {
             type: "http",
             url: "https://api.githubcopilot.com/mcp/",
-            headers: { "Authorization": `Bearer ${GH_TOKEN}` },
-            tools: ["*"],
         },
     },
 };
@@ -154,17 +182,21 @@ async function chat() {
     console.log(session);
 
     session.on((event) => {
-        switch (event.type) {
-            case "assistant.message":
-                console.log("Assistant:", event.data.content);
-                break;
-            case "session.error":
-                console.error("Error:", event.data.message);
-                break;
-            default:
-                console.log("default:", event.data);
-                break;
-        }
+
+        console.log("Evento de sesión:", event);
+
+
+        // switch (event.type) {
+        //     case "assistant.message":
+        //         console.log("Assistant:", event.data.content);
+        //         break;
+        //     case "session.error":
+        //         console.error("Error:", event.data.message);
+        //         break;
+        //     default:
+        //         console.log("default:", event.data);
+        //         break;
+        // }
     });
 
     // ⌨️ readline.createInterface: sencillo loop de chat; para más fancy, mira Inquirer, Blessed o Ink.

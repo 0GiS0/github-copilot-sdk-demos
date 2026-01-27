@@ -50,6 +50,7 @@ marked.use(markedTerminal());
   // 🧵 Crea una sesión de chat con streaming habilitado
   // 💡 streaming: true permite recibir la respuesta token por token
   const session = await client.createSession({
+    model: "gpt-5-mini", // 🧠 Modelo a usar
     streaming: true, // ⚡ Habilita respuestas en tiempo real (token a token)
     systemMessage: {
       // 🧠 Mensaje del sistema que define el comportamiento del asistente
@@ -87,6 +88,41 @@ Be direct and show the work, not just confirmations.`,
     return new Promise((resolve) => rl.question(query, resolve));
   };
 
+  // � Variables de estado para el streaming (compartidas entre iteraciones)
+  let fullContent = "";
+  let responseStarted = false;
+  let spinner: ReturnType<typeof ora> | null = null;
+  let resolveResponse: (() => void) | null = null;
+
+  // 🎧 Registra el listener UNA sola vez fuera del loop
+  session.on((event) => {
+    if (event.type === "assistant.message_delta") {
+      // 📨 Evento: Llegó un chunk de la respuesta (streaming)
+      if (spinner?.isSpinning) {
+        spinner.succeed(chalk.green("✓ Respuesta recibida"));
+        responseStarted = true;
+      }
+      // 🏷️ Muestra el header solo la primera vez
+      if (fullContent === "") {
+        console.log(chalk.magenta.bold("🤖 Copilot:"));
+      }
+      // ✍️ Escribe el chunk directamente (sin salto de línea)
+      process.stdout.write(event.data.deltaContent);
+      fullContent += event.data.deltaContent;
+    } else if (event.type === "assistant.message") {
+      // ✅ Evento: La respuesta está completa
+      if (!responseStarted && spinner?.isSpinning) {
+        spinner.succeed(chalk.green("✓ Respuesta recibida"));
+      }
+      console.log();
+      // 🎬 Resolvemos la Promise para continuar con el loop
+      if (resolveResponse) {
+        resolveResponse();
+        resolveResponse = null;
+      }
+    }
+  });
+
   // 🔁 Loop principal del chat - se ejecuta hasta que el usuario escriba "exit"
   while (true) {
     // ❓ Pide input al usuario
@@ -103,44 +139,46 @@ Be direct and show the work, not just confirmations.`,
     }
 
     console.log();
+
+    // 🔄 Reinicia el estado para la nueva respuesta
+    fullContent = "";
+    responseStarted = false;
+
     // 🔄 Muestra un spinner mientras esperamos la respuesta
-    const spinner = ora("Pensando...").start();
+    spinner = ora({
+      text: chalk.cyan("🤔 Pensando..."),
+      stream: process.stdout,
+      discardStdin: false,
+      hideCursor: false,
+    }).start();
 
-    // 📝 Acumula el contenido de la respuesta conforme llega
-    let fullContent = "";
-
-    // 🎧 Configura el listener de eventos para manejar la respuesta en streaming
-    // 💡 Usamos una Promise para esperar a que termine la respuesta completa
+    // 💡 Creamos una Promise que se resolverá cuando llegue el evento assistant.message
     const done = new Promise<void>((resolve) => {
-      session.on((event) => {
-        // 🔀 Switch implícito por tipo de evento
-        if (event.type === "assistant.message_delta") {
-          // 📨 Evento: Llegó un chunk de la respuesta (streaming)
-          // 🛑 Detiene el spinner cuando empezamos a recibir contenido
-          if (spinner.isSpinning) {
-            spinner.stop();
-          }
-          // 🏷️ Muestra el header solo la primera vez
-          if (fullContent === "") {
-            console.log(chalk.magenta.bold("🤖 Copilot:"));
-          }
-          // ✍️ Escribe el chunk directamente (sin salto de línea)
-          // 📺 Esto crea el efecto de "typing" en tiempo real
-          process.stdout.write(event.data.deltaContent);
-          fullContent += event.data.deltaContent;
-        } else if (event.type === "session.idle") {
-          // ✅ Evento: La sesión terminó de procesar
-          // 🎬 Resolvemos la Promise para continuar con el loop
-          console.log();
-          resolve();
+      resolveResponse = resolve;
+
+      // ⏱️ Timeout de seguridad: si no recibimos respuesta en 5 minutos, forzamos la salida
+      setTimeout(() => {
+        if (spinner?.isSpinning) {
+          spinner.fail(chalk.red("Timeout esperando respuesta"));
         }
-      });
+        if (resolveResponse) {
+          resolveResponse();
+          resolveResponse = null;
+        }
+      }, 300000);
     });
 
     // 📤 Envía el prompt al servidor (no esperamos respuesta directa)
-    await session.send({ prompt });
-    // ⏳ Espera a que termine el streaming completo
-    await done;
+    try {
+      await session.send({ prompt });
+      // ⏳ Espera a que termine el streaming completo
+      await done;
+    } catch (error: any) {
+      if (spinner?.isSpinning) {
+        spinner.fail(chalk.red("Error al procesar"));
+      }
+      console.error(error);
+    }
   }
 
   // 👋 Mensaje de despedida

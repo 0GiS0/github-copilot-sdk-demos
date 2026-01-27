@@ -6,10 +6,29 @@
  * - Dame sugerencias para mejorar este código de este repo.
  * - ¿Cuál es el último repo que he creado en GitHub?
  * - ¿Qué ves en esta imagen? #Gis.png
+ * 
+ * 🎮 Comandos disponibles:
+ * - /help  → Muestra ayuda y herramientas disponibles
+ * - /exit  → Sale del chat
  */
 
+// ═══════════════════════════════════════════════════════════════════════════
+// 🔐 VALIDACIÓN DE ENTORNO
+// ═══════════════════════════════════════════════════════════════════════════
+// Verificamos que las variables de entorno necesarias estén configuradas
+// antes de continuar. Esto evita errores crípticos más adelante.
+if (!process.env.GH_TOKEN && !process.env.GITHUB_TOKEN) {
+    console.error("\n❌ ERROR: No se encontró token de GitHub");
+    console.error("\n📋 Para solucionar esto, configura una de estas variables de entorno:");
+    console.error("   • GH_TOKEN=tu_token_aqui");
+    console.error("   • GITHUB_TOKEN=tu_token_aqui");
+    console.error("\n💡 Puedes obtener un token en: https://github.com/settings/tokens");
+    console.error("   Asegúrate de que tenga el scope 'copilot'\n");
+    process.exit(1);
+}
+
 import { marked } from "marked";
-import { markedTerminal } from "marked-terminal";
+import { markedTerminal } from "marked-terminal"
 import { CopilotClient, defineTool, SessionConfig } from "@github/copilot-sdk";
 import chalk from "chalk";
 import ora from "ora";
@@ -21,7 +40,7 @@ marked.use(new markedTerminal());
 // 🔧 Configuración general
 const DEFAULT_MODEL = "gpt-5.2"; // 🧠 Modelo por defecto (ajusta según disponibilidad)
 const YOUTUBE_CHANNEL_ID = "UC140iBrEZbOtvxWsJ-Tb0lQ" as const; // 📺 Canal de YouTube
-const DEBUG_LOG_RESPONSE = false; // 🐞 Cambia a true para depurar el payload
+let DEBUG_LOG_RESPONSE = false; // 🐞 Cambia a true para depurar el payload (o usa /debug)
 
 // 🧰 Helpers (azúcar sintáctico con spinner y colorines)
 const withSpinner = async <T>(text: string, action: () => Promise<T>) => {
@@ -125,14 +144,9 @@ IMPORTANTE: Cuando uses las tools 'list_available_models' o 'list_active_session
         filesystem: {
             type: "local",
             command: "npx",
-            args: ["-y", "@modelcontextprotocol/server-filesystem", "/workspaces/github-copilot-cli-server-mode"],
+            args: ["-y", "@modelcontextprotocol/server-filesystem", "/workspaces/github-copilot-cli-server-mode/images"],
             tools: ["*"],
-        },
-        // Remote MCP server (HTTP)
-        github: {
-            type: "http",
-            url: "https://api.githubcopilot.com/mcp/",
-        },
+        }
     },
 };
 
@@ -163,56 +177,117 @@ async function handlePrompt(session: any, promptText: string) {
             timeoutMs: 45000,
             // attachments: [{ type: "file", path: "Gis.png" }], // opcional: añade archivos aquí
         });
-        spinner.succeed(chalk.green(`✓ Respuesta recibida`));
+        spinner.succeed(chalk.green(`✅ Respuesta recibida`));
         await printResponse(promptText, response);
         return { ok: true };
     } catch (error: any) {
-        spinner.fail(chalk.red(`✗ Error procesando`));
-        console.error(error);
+        // 🚨 Clasificamos el error para dar mejor feedback al usuario
+        if (error?.code === 'ECONNREFUSED' || error?.code === 'ENOTFOUND') {
+            spinner.fail(chalk.red(`❌ Error de conexión`));
+            console.error(chalk.yellow("   💡 Verifica tu conexión a internet"));
+        } else if (error?.message?.includes('timeout') || error?.message?.includes('idle')) {
+            spinner.fail(chalk.red(`⚠️ Timeout: La sesión expiró por inactividad`));
+        } else if (error?.status === 401 || error?.message?.includes('unauthorized')) {
+            spinner.fail(chalk.red(`🔒 Error de autenticación`));
+            console.error(chalk.yellow("   💡 Verifica que tu token GH_TOKEN sea válido"));
+        } else if (error?.status === 429 || error?.message?.includes('rate limit')) {
+            spinner.fail(chalk.red(`🚫 Rate limit: Demasiadas peticiones`));
+            console.error(chalk.yellow("   💡 Espera unos minutos antes de continuar"));
+        } else {
+            spinner.fail(chalk.red(`❌ Error procesando la petición`));
+        }
+        console.error(chalk.dim("   Detalles:"), error?.message || error);
         return { ok: false, error };
     }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 📖 COMANDO DE AYUDA
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * 📖 Muestra la ayuda del chat con comandos y herramientas disponibles
+ * Esta función es útil para que los usuarios descubran las capacidades del bot
+ */
+function showHelp() {
+    console.log(chalk.cyan("\n╔════════════════════════════════════════════════════════════╗"));
+    console.log(chalk.cyan("║              📖 AYUDA DEL CHAT COPILOT                     ║"));
+    console.log(chalk.cyan("╚════════════════════════════════════════════════════════════╝\n"));
+
+    // Comandos disponibles
+    console.log(chalk.yellow("🎮 COMANDOS DISPONIBLES:"));
+    console.log(chalk.white("   /help   → Muestra esta ayuda"));
+    console.log(chalk.white("   /debug  → Activa/desactiva modo debug"));
+    console.log(chalk.white("   /exit   → Sale del chat\n"));
+
+    // Herramientas (tools) disponibles
+    console.log(chalk.yellow("🛠️  HERRAMIENTAS DISPONIBLES:"));
+    console.log(chalk.white("   📅 get_utc_date          → Devuelve la fecha actual en UTC"));
+    console.log(chalk.white("   📺 get_youtube_feed      → Obtiene el feed RSS de YouTube"));
+    console.log(chalk.white("   🤖 list_available_models → Lista los modelos de Copilot disponibles"));
+    console.log(chalk.white("   💬 list_active_sessions  → Lista las sesiones activas\n"));
+
+    // MCP Servers
+    console.log(chalk.yellow("🌐 SERVIDORES MCP CONECTADOS:"));
+    console.log(chalk.white("   📁 filesystem → Acceso a archivos del proyecto"));
+    console.log(chalk.white("   🐙 github     → API de GitHub (repos, issues, PRs...)\n"));
+
+    // Ejemplos de uso
+    console.log(chalk.yellow("💬 EJEMPLOS DE PREGUNTAS:"));
+    console.log(chalk.gray("   • ¿Cuál es el último vídeo en el canal de returngis?"));
+    console.log(chalk.gray("   • Dame sugerencias para mejorar el código de este repo"));
+    console.log(chalk.gray("   • ¿Qué modelos tengo disponibles?"));
+    console.log(chalk.gray("   • Lista mis sesiones activas\n"));
 }
 
 // 💬 Chat loop
 async function chat() {
 
-    // 🧵 Creamos la sesión antes del loop para mantener el contexto. Si quieres reiniciar sesión tras cada prompt, mueve esta línea dentro del loop.
+    // 🧵 Creamos la sesión antes del loop para mantener el contexto. 
+    // Si quieres reiniciar sesión tras cada prompt, mueve esta línea dentro del loop.
     let session = await copilotClient.createSession(sessionOptions);
 
     console.log(session);
 
     session.on((event) => {
 
-        console.log("Evento de sesión:", event);
-
-
-        // switch (event.type) {
-        //     case "assistant.message":
-        //         console.log("Assistant:", event.data.content);
-        //         break;
-        //     case "session.error":
-        //         console.error("Error:", event.data.message);
-        //         break;
-        //     default:
-        //         console.log("default:", event.data);
-        //         break;
-        // }
+        if (DEBUG_LOG_RESPONSE)
+            console.log("Evento de sesión:", event);
     });
 
     // ⌨️ readline.createInterface: sencillo loop de chat; para más fancy, mira Inquirer, Blessed o Ink.
     const rl = readline.createInterface({ input, output });
 
     console.log(chalk.bold.blue("\n=== MODO CHAT ==="));
-    console.log(chalk.gray("Escribe tu pregunta o /exit para salir."));
+    console.log(chalk.gray("Escribe tu pregunta, /help para ayuda o /exit para salir."));
 
     while (true) {
         const userInput = (await rl.question(chalk.magenta("> "))).trim();
         if (!userInput) continue;
-        if (userInput.toLowerCase() === "/exit") break;
+
+        // 🎮 Manejo de comandos especiales
+        const command = userInput.toLowerCase();
+        if (command === "/exit" || command === "/salir") break;
+        if (command === "/help" || command === "/ayuda") {
+            showHelp();
+            continue;
+        }
+        if (command === "/debug") {
+            DEBUG_LOG_RESPONSE = !DEBUG_LOG_RESPONSE;
+            const status = DEBUG_LOG_RESPONSE ? "🟢 ACTIVADO" : "🔴 DESACTIVADO";
+            console.log(chalk.yellow(`\n🐞 Modo debug: ${status}\n`));
+            if (DEBUG_LOG_RESPONSE) {
+                console.log(chalk.dim("   Ahora verás los payloads completos de las respuestas"));
+                console.log(chalk.dim("   y los eventos de sesión en la consola.\n"));
+            }
+            continue;
+        }
+
         const result = await handlePrompt(session, userInput);
-        if (!result.ok && result.error?.message?.includes?.("idle")) {
-            console.log(chalk.yellow("🔁 Reiniciando sesión tras timeout..."));
+        if (!result.ok && result.error?.message?.includes?.('idle')) {
+            console.log(chalk.yellow("🔄 Reconectando: Reiniciando sesión tras timeout..."));
             session = await copilotClient.createSession(sessionOptions);
+            console.log(chalk.green("✅ Sesión reiniciada correctamente"));
         }
         // 🧽 Limpieza de línea: vuelve a mostrar el prompt limpio tras cada respuesta
         output.write("\n");

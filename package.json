@@ -6,6 +6,7 @@
   "scripts": {
     "start": "npx tsx 0.basic.ts",
     "agents": "npx tsx 1.agents.ts",
+    "streaming": "npx tsx 2.streaming.ts",
     "external-server": "npx tsx 3.server.ts"
   },
   "keywords": [],

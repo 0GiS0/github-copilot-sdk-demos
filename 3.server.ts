@@ -12,7 +12,12 @@
   
  */
 
-// 📦 Importaciones necesarias
+// ═══════════════════════════════════════════════════════════════════════════
+// 🔐 VALIDACIÓN DE ENTORNO
+// ═══════════════════════════════════════════════════════════════════════════
+// 📝 NOTA: Este script usa modo servidor, así que el token está en el servidor,
+// pero aún así validamos que el servidor esté configurado correctamente.
+
 import { CopilotClient } from "@github/copilot-sdk"; // 🤖 Cliente del SDK de Copilot
 import * as readline from "readline"; // ⌨️ Para leer entrada del usuario en la terminal
 import chalk from "chalk"; // 🎨 Colores bonitos para la terminal
@@ -175,9 +180,24 @@ Be direct and show the work, not just confirmations.`,
       await done;
     } catch (error: any) {
       if (spinner?.isSpinning) {
-        spinner.fail(chalk.red("Error al procesar"));
+        // 🚨 Clasificamos el error para dar mejor feedback al usuario
+        if (error?.code === 'ECONNREFUSED' || error?.code === 'ENOTFOUND') {
+          spinner.fail(chalk.red("❌ Error de conexión: No se pudo conectar al servidor"));
+          console.error(chalk.yellow("   💡 Verifica que el servidor Copilot esté corriendo en: " + COPILOT_URL));
+        } else if (error?.message?.includes('timeout') || error?.message?.includes('ETIMEDOUT')) {
+          spinner.fail(chalk.red("⚠️ Timeout: El servidor tardó demasiado en responder"));
+          console.error(chalk.yellow("   💡 Intenta con un prompt más corto o verifica la conexión"));
+        } else if (error?.status === 401 || error?.message?.includes('unauthorized')) {
+          spinner.fail(chalk.red("🔒 Error de autenticación: Token inválido o expirado"));
+          console.error(chalk.yellow("   💡 Verifica que el servidor tenga un token de GitHub válido"));
+        } else if (error?.status === 429 || error?.message?.includes('rate limit')) {
+          spinner.fail(chalk.red("🚫 Rate limit: Demasiadas peticiones"));
+          console.error(chalk.yellow("   💡 Espera unos minutos antes de continuar"));
+        } else {
+          spinner.fail(chalk.red("❌ Error al procesar la petición"));
+        }
       }
-      console.error(error);
+      console.error(chalk.dim("   Detalles:"), error?.message || error);
     }
   }
 

@@ -185,6 +185,12 @@ npm start
 npm run agents
 ```
 
+### Ejecutar Demo de Streaming
+
+```bash
+npm run streaming
+```
+
 ### Ejecutar Cliente Remoto
 
 ```bash
@@ -199,7 +205,9 @@ npm run external-server
 github-copilot-sdk-demos/
 ├── 0.basic.ts              # 📚 Demo básica - Fundamentos del SDK
 ├── 1.agents.ts             # 🤖 Demo avanzada - Chat con tools y MCP servers
+├── 2.streaming.ts          # ⚡ Demo streaming - Respuestas token a token
 ├── 3.server.ts             # 🌐 Demo remota - Cliente que se conecta a servidor
+├── config.example.ts       # ⚙️ Configuración de ejemplo (copia a config.ts)
 ├── package.json            # 📦 Dependencias del proyecto
 ├── tsconfig.json           # ⚙️ Configuración de TypeScript
 ├── Dockerfile              # 🐳 Para ejecutar en Docker
@@ -210,12 +218,14 @@ github-copilot-sdk-demos/
 
 ### Descripción de Archivos
 
-| Archivo          | Descripción                                             |
-| ---------------- | ------------------------------------------------------- |
-| **0.basic.ts**   | Ejemplo simple para aprender los fundamentos            |
-| **1.agents.ts**  | Chat interactivo con custom tools y MCP servers         |
-| **3.server.ts**  | Cliente que se conecta a servidor remoto de Copilot CLI |
-| **package.json** | Scripts: `start`, `agents`, `external-server`           |
+| Archivo               | Descripción                                             |
+| --------------------- | ------------------------------------------------------- |
+| **0.basic.ts**        | Ejemplo simple para aprender los fundamentos            |
+| **1.agents.ts**       | Chat interactivo con custom tools y MCP servers         |
+| **2.streaming.ts**    | Demo de streaming token a token (concepto intermedio)   |
+| **3.server.ts**       | Cliente que se conecta a servidor remoto de Copilot CLI |
+| **config.example.ts** | Archivo de configuración de ejemplo con comentarios     |
+| **package.json**      | Scripts: `start`, `agents`, `streaming`, `external-server` |
 
 ---
 

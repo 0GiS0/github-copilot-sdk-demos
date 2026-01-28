@@ -18,17 +18,17 @@
 
 ## 📑 Tabla de Contenidos
 
-| Sección | Descripción |
-|---------|-------------|
-| 🎬 [Demos Disponibles](#-demos-disponibles) | Las 4 demos principales del proyecto |
-| ✨ [Características](#-características-comunes) | Funcionalidades comunes del SDK |
-| 🛠️ [Tecnologías](#-tecnologías-utilizadas) | Stack tecnológico utilizado |
-| 📋 [Requisitos Previos](#-requisitos-previos) | Lo que necesitas para empezar |
-| 🚀 [Instalación](#-instalación) | Pasos para configurar el proyecto |
-| 💻 [Uso](#-uso) | Cómo ejecutar cada demo |
-| 📁 [Estructura del Proyecto](#-estructura-del-proyecto) | Organización de archivos |
-| 💡 [Conceptos Clave](#-conceptos-clave) | Ideas importantes para entender el SDK |
-| 🌐 [Sígueme](#-sígueme-en-mis-redes-sociales) | Conecta conmigo en redes |
+| Sección                                                 | Descripción                            |
+| ------------------------------------------------------- | -------------------------------------- |
+| 🎬 [Demos Disponibles](#-demos-disponibles)             | Las 4 demos principales del proyecto   |
+| ✨ [Características](#-características-comunes)         | Funcionalidades comunes del SDK        |
+| 🛠️ [Tecnologías](#-tecnologías-utilizadas)              | Stack tecnológico utilizado            |
+| 📋 [Requisitos Previos](#-requisitos-previos)           | Lo que necesitas para empezar          |
+| 🚀 [Instalación](#-instalación)                         | Pasos para configurar el proyecto      |
+| 💻 [Uso](#-uso)                                         | Cómo ejecutar cada demo                |
+| 📁 [Estructura del Proyecto](#-estructura-del-proyecto) | Organización de archivos               |
+| 💡 [Conceptos Clave](#-conceptos-clave)                 | Ideas importantes para entender el SDK |
+| 🌐 [Sígueme](#-sígueme-en-mis-redes-sociales)           | Conecta conmigo en redes               |
 
 ---
 
@@ -215,6 +215,7 @@ npm run agents
 ```
 
 Escribe tus preguntas y presiona Enter. El chatbot puede:
+
 - Obtener la fecha actual
 - Acceder a información de GitHub
 - Acceder a archivos del sistema

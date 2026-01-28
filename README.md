@@ -334,4 +334,4 @@ Si te ha gustado este proyecto y quieres ver más contenido como este, no olvide
 
 ---
 
-**¡Gracias por tu interés en este proyecto! 🚀**
+**Happy coding! 🚀**

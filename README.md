@@ -8,7 +8,7 @@
 
 ---
 
-¡Hola developer 👋🏻! Colección completa de ejemplos prácticos para dominar el **GitHub Copilot SDK**. Desde demos básicas hasta chatbots interactivos con agents y conexiones remotas a servidores de Copilot CLI. Aprenderás cómo usar herramientas personalizadas (tools), MCP servers, streaming en tiempo real y mucho más.
+¡Hola developer 👋🏻! 📚 Este repositorio contiene las **demos con las que estoy aprendiendo GitHub Copilot SDK**. Aquí encontrarás ejemplos prácticos desde lo más básico hasta casos avanzados con chatbots interactivos, agents personalizados, MCP servers y streaming en tiempo real. ¡Acompáñame en este viaje de aprendizaje!
 
 <a href="https://youtu.be/2_MXlt-_898">
  <img src="https://img.youtube.com/vi/2_MXlt-_898/maxresdefault.jpg" alt="GitHub Copilot SDK Demos" width="100%" />

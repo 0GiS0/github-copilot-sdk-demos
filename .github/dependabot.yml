@@ -9,9 +9,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "03:00"
+      interval: "daily"
     open-pull-requests-limit: 10
     commit-message:
       prefix: "⬆️ deps:"
@@ -24,9 +22,7 @@ updates:
   - package-ecosystem: "devcontainers"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "04:00"
+      interval: "daily"
     commit-message:
       prefix: "🐳 devcontainer:"
       include: "scope"
@@ -37,9 +33,7 @@ updates:
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "05:00"
+      interval: "daily"
     commit-message:
       prefix: "🐳 docker:"
       include: "scope"

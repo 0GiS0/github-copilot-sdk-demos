@@ -146,7 +146,7 @@ async function handlePrompt(session: any, promptText: string) {
     try {
         const response = await session.sendAndWait({
             prompt: promptText,
-            timeoutMs: 45000,
+            //timeoutMs: 45000,
             // attachments: [{ type: "file", path: "Gis.png" }], // opcional: añade archivos aquí
         });
         spinner.succeed(chalk.green(`✅ Respuesta recibida`));
@@ -227,7 +227,7 @@ async function chat() {
             console.log("Evento de sesión:", event);
     });
 
-    // ⌨️ readline.createInterface: sencillo loop de chat; para más fancy, mira Inquirer, Blessed o Ink.
+    // ⌨️ readline.createInterface: sencillo loop de chat
     const rl = readline.createInterface({ input, output });
 
     console.log(chalk.bold.blue("\n=== MODO CHAT ==="));

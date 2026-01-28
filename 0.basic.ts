@@ -25,7 +25,7 @@ const copilotSessionId = copilotSession.sessionId; // 🧾 Guarda el ID para ret
 console.log(`🆔 Sesión creada con ID: ${copilotSession.sessionId}`);
 
 // 🧮 Envía un prompt sencillo y espera la respuesta
-const initialPrompt = `¿Cuál sería la estructura recomendada para un proyecto web en SpringBoot? 
+const initialPrompt = `¿Cuál sería la estructura recomendada para un proyecto web en Spring Boot? 
         Pintamelo en formato tree y añade un comentario al lado de cada carpeta y archivo 
         con un emoji que represente su función.`;
 const initialPromptSpinner = ora({ text: `⏳ Esperando respuesta para: "${formatPromptInline(initialPrompt)}"`, spinner: "dots" }).start();

@@ -30,7 +30,7 @@ import ora from "ora"; // 🔄 Spinners animados para mostrar que estamos espera
 const COPILOT_URL = "copilot-cli-server:4321";
 
 // 🎨 Configura marked para renderizar Markdown con colores en la terminal
-marked.use(markedTerminal());
+marked.use(markedTerminal() as any);
 
 // 🚀 Función principal auto-ejecutable (IIFE async)
 (async () => {

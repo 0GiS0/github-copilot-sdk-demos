@@ -7,7 +7,7 @@ import ora from "ora";
 import readline from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 
-marked.use(new markedTerminal());
+marked.use(markedTerminal() as any);
 
 // 🔧 Configuración general
 const DEFAULT_MODEL = "gpt-5.2"; // 🧠 Modelo por defecto (ajusta según disponibilidad)

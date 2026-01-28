@@ -18,15 +18,17 @@
 
 ## 📑 Tabla de Contenidos
 
-- [Demos Disponibles](#-demos-disponibles)
-- [Características](#-características-comunes)
-- [Tecnologías](#-tecnologías-utilizadas)
-- [Requisitos Previos](#-requisitos-previos)
-- [Instalación](#-instalación)
-- [Uso](#-uso)
-- [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Conceptos Clave](#-conceptos-clave)
-- [Sígueme](#-sígueme-en-mis-redes-sociales)
+| Sección | Descripción |
+|---------|-------------|
+| 🎬 [Demos Disponibles](#-demos-disponibles) | Las 4 demos principales del proyecto |
+| ✨ [Características](#-características-comunes) | Funcionalidades comunes del SDK |
+| 🛠️ [Tecnologías](#-tecnologías-utilizadas) | Stack tecnológico utilizado |
+| 📋 [Requisitos Previos](#-requisitos-previos) | Lo que necesitas para empezar |
+| 🚀 [Instalación](#-instalación) | Pasos para configurar el proyecto |
+| 💻 [Uso](#-uso) | Cómo ejecutar cada demo |
+| 📁 [Estructura del Proyecto](#-estructura-del-proyecto) | Organización de archivos |
+| 💡 [Conceptos Clave](#-conceptos-clave) | Ideas importantes para entender el SDK |
+| 🌐 [Sígueme](#-sígueme-en-mis-redes-sociales) | Conecta conmigo en redes |
 
 ---
 

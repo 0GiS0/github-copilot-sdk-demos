@@ -13,25 +13,23 @@
 
 ¡Hola developer 👋🏻! Colección completa de ejemplos prácticos para dominar el **GitHub Copilot SDK**. Desde demos básicas hasta chatbots interactivos con agents y conexiones remotas a servidores de Copilot CLI. Aprenderás cómo usar herramientas personalizadas (tools), MCP servers, streaming en tiempo real y mucho más.
 
-<a href="https://youtu.be/VIDEO_CODE">
- <img src="https://img.youtube.com/vi/VIDEO_CODE/maxresdefault.jpg" alt="GitHub Copilot SDK Demos" width="100%" />
+<a href="https://youtu.be/2_MXlt-_898">
+ <img src="https://img.youtube.com/vi/2_MXlt-_898/maxresdefault.jpg" alt="GitHub Copilot SDK Demos" width="100%" />
 </a>
-
-> **Nota:** Reemplaza `VIDEO_CODE` con el código de tu vídeo de YouTube
 
 ---
 
 ## 📑 Tabla de Contenidos
 
 - [Demos Disponibles](#-demos-disponibles)
-- [Características](#características)
-- [Tecnologías](#tecnologías)
-- [Requisitos Previos](#requisitos-previos)
-- [Instalación](#instalación)
-- [Uso](#uso)
-- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Características](#-características-comunes)
+- [Tecnologías](#-tecnologías-utilizadas)
+- [Requisitos Previos](#-requisitos-previos)
+- [Instalación](#-instalación)
+- [Uso](#-uso)
+- [Estructura del Proyecto](#-estructura-del-proyecto)
 - [Conceptos Clave](#-conceptos-clave)
-- [Sígueme](#sígueme-en-mis-redes-sociales)
+- [Sígueme](#-sígueme-en-mis-redes-sociales)
 
 ---
 
@@ -85,7 +83,26 @@ npm run agents
 
 ---
 
-### 3️⃣ **3.server.ts** - Remote GitHub Copilot CLI
+### 3️⃣ **2.streaming.ts** - Demo de Streaming
+
+Recibe respuestas token a token en tiempo real:
+
+- ⚡ **Streaming en Tiempo Real** - Respuestas token por token
+- 🎧 **Event Listeners** - Escucha eventos de la sesión
+- 💬 **Interfaz Interactiva** - Chat en terminal con UI mejorada
+- 🎨 **Output Formateado** - Markdown en terminal
+
+**Comandos:**
+
+```bash
+npm run streaming
+```
+
+**Ideal para:** Entender cómo funcionan las respuestas en streaming y mejorar la UX de aplicaciones.
+
+---
+
+### 4️⃣ **3.server.ts** - Remote GitHub Copilot CLI
 
 Conexión a un servidor Copilot CLI remoto:
 
@@ -98,6 +115,7 @@ Conexión a un servidor Copilot CLI remoto:
 
 ```bash
 npm run external-server
+
 ```
 
 **Requisitos:**
@@ -123,11 +141,13 @@ npm run external-server
 
 ## 🛠️ Tecnologías Utilizadas
 
-- **Node.js** - Runtime de JavaScript
+- **Node.js 18+** - Runtime de JavaScript
 - **TypeScript** - Tipado estático
 - **@github/copilot-sdk** - SDK oficial de GitHub Copilot
 - **chalk** - Colores y estilos en terminal
-- **Docker** - Containerización
+- **marked** - Parser de Markdown
+- **ora** - Spinners animados
+- **Docker** - Containerización (opcional)
 
 ---
 
@@ -135,8 +155,9 @@ npm run external-server
 
 - **Node.js** versión 18 o superior
 - **npm** o **yarn**
-- **Docker** (para ejecutar el servidor de Copilot CLI)
-- **GitHub Copilot** - Token de autenticación necesario
+- **GitHub Copilot** - Necesario tener licencia activa
+- **GitHub Token** - Con permisos para usar Copilot (obtén uno aquí: https://github.com/settings/tokens)
+- **Docker** (opcional, para ejecutar el servidor de Copilot CLI)
 
 ---
 
@@ -155,23 +176,30 @@ cd github-copilot-sdk-demos
 npm install
 ```
 
-### Paso 3: Configurar variables de entorno (para demos con MCP GitHub)
+### Paso 3: Configurar variables de entorno
 
 ```bash
 cp .env.example .env
 ```
 
-Edita `.env` y añade tu `GH_TOKEN` (token de GitHub con permisos necesarios):
+Edita `.env` y añade tu `GH_TOKEN` (token de GitHub con permisos de Copilot):
+
+```env
+GH_TOKEN=your_github_token_here
+```
+
+### Paso 4: Ejecutar una demo
 
 ```bash
-GH_TOKEN=your_github_token_here
+npm start                # Demo básica
+npm run agents           # Demo con agents y tools
+npm run streaming        # Demo de streaming
+npm run external-server  # Cliente remoto
 ```
 
 ---
 
 ## 💻 Uso
-
-Elige qué demo quieres ejecutar:
 
 ### Ejecutar Demo Básica
 
@@ -179,11 +207,20 @@ Elige qué demo quieres ejecutar:
 npm start
 ```
 
+Espera a que se complете la solicitud y verás la respuesta en la terminal.
+
 ### Ejecutar Chat con Agents
 
 ```bash
 npm run agents
 ```
+
+Escribe tus preguntas y presiona Enter. El chatbot puede:
+- Obtener la fecha actual
+- Acceder a información de GitHub
+- Acceder a archivos del sistema
+
+Escribe `/debug` para ver el payload completo de respuestas.
 
 ### Ejecutar Demo de Streaming
 
@@ -191,11 +228,15 @@ npm run agents
 npm run streaming
 ```
 
+Verás las respuestas generarse token a token en la terminal.
+
 ### Ejecutar Cliente Remoto
 
 ```bash
 npm run external-server
 ```
+
+Requiere tener un servidor Copilot CLI corriendo en `copilot-cli-server:4321`.
 
 ---
 
@@ -207,25 +248,15 @@ github-copilot-sdk-demos/
 ├── 1.agents.ts             # 🤖 Demo avanzada - Chat con tools y MCP servers
 ├── 2.streaming.ts          # ⚡ Demo streaming - Respuestas token a token
 ├── 3.server.ts             # 🌐 Demo remota - Cliente que se conecta a servidor
-├── config.example.ts       # ⚙️ Configuración de ejemplo (copia a config.ts)
+├── config.example.ts       # ⚙️ Configuración de ejemplo
 ├── package.json            # 📦 Dependencias del proyecto
 ├── tsconfig.json           # ⚙️ Configuración de TypeScript
 ├── Dockerfile              # 🐳 Para ejecutar en Docker
 ├── .env.example            # 🔑 Variables de entorno de ejemplo
+├── .devcontainer/          # 📦 Configuración para Dev Container
 ├── .gitignore              # 🚫 Archivos ignorados por git
 └── README.md               # 📖 Este archivo
 ```
-
-### Descripción de Archivos
-
-| Archivo               | Descripción                                             |
-| --------------------- | ------------------------------------------------------- |
-| **0.basic.ts**        | Ejemplo simple para aprender los fundamentos            |
-| **1.agents.ts**       | Chat interactivo con custom tools y MCP servers         |
-| **2.streaming.ts**    | Demo de streaming token a token (concepto intermedio)   |
-| **3.server.ts**       | Cliente que se conecta a servidor remoto de Copilot CLI |
-| **config.example.ts** | Archivo de configuración de ejemplo con comentarios     |
-| **package.json**      | Scripts: `start`, `agents`, `streaming`, `external-server` |
 
 ---
 
@@ -270,7 +301,7 @@ Integra servidores externos para ampliar capacidades:
 Las respuestas llegan token por token, no todas de una vez:
 
 ```typescript
-streaming: true; // Habilitado por defecto en 3.server.ts
+streaming: true; // Habilitado por defecto en demos de streaming
 ```
 
 ### 🎧 Event Listeners

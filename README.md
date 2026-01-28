@@ -140,7 +140,7 @@ npm run external-server
 
 ## 🛠️ Tecnologías Utilizadas
 
-- **Node.js 18+** - Runtime de JavaScript
+- **Node.js 25+** - Runtime de JavaScript
 - **TypeScript** - Tipado estático
 - **@github/copilot-sdk** - SDK oficial de GitHub Copilot
 - **chalk** - Colores y estilos en terminal
@@ -152,7 +152,7 @@ npm run external-server
 
 ## 📋 Requisitos Previos
 
-- **Node.js** versión 18 o superior
+- **Node.js** versión 25 o superior
 - **npm** o **yarn**
 - **GitHub Copilot** - Necesario tener licencia activa
 - **GitHub Token** - Con permisos para usar Copilot (obtén uno aquí: https://github.com/settings/tokens)

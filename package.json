@@ -14,7 +14,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "@github/copilot-sdk": "^0.1.19",
+    "@github/copilot-sdk": "^0.1.26",
     "chalk": "^5.6.2",
     "marked": "^15.0.0",
     "marked-terminal": "^7.3.0",

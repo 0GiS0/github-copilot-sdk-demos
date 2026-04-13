@@ -18,7 +18,7 @@
 // 📝 NOTA: Este script usa modo servidor, así que el token está en el servidor,
 // pero aún así validamos que el servidor esté configurado correctamente.
 
-import { CopilotClient } from "@github/copilot-sdk"; // 🤖 Cliente del SDK de Copilot
+import { approveAll, CopilotClient } from "@github/copilot-sdk"; // 🤖 Cliente del SDK de Copilot
 import * as readline from "readline"; // ⌨️ Para leer entrada del usuario en la terminal
 import chalk from "chalk"; // 🎨 Colores bonitos para la terminal
 import { marked } from "marked"; // 📄 Parser de Markdown
@@ -56,6 +56,7 @@ marked.use(markedTerminal() as any);
   // 💡 streaming: true permite recibir la respuesta token por token
   const session = await client.createSession({
     model: "gpt-5-mini", // 🧠 Modelo a usar
+    onPermissionRequest: approveAll, // ✅ Acepta todos los permisos solicitados por el modelo
     streaming: true, // ⚡ Habilita respuestas en tiempo real (token a token)
     systemMessage: {
       // 🧠 Mensaje del sistema que define el comportamiento del asistente

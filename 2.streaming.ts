@@ -38,7 +38,7 @@ if (!process.env.GH_TOKEN && !process.env.GITHUB_TOKEN) {
 // 📦 IMPORTACIONES
 // ═══════════════════════════════════════════════════════════════════════════
 
-import { CopilotClient } from "@github/copilot-sdk";
+import { approveAll, CopilotClient } from "@github/copilot-sdk";
 import chalk from "chalk";
 import ora from "ora";
 
@@ -84,6 +84,7 @@ async function main() {
 
     const session = await client.createSession({
         model: MODEL_NAME,
+        onPermissionRequest: approveAll,
         streaming: true,  // ⚡ CLAVE: Habilita el modo streaming
     });
 

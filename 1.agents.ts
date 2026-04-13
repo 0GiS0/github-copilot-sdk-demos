@@ -1,7 +1,7 @@
 // 📦 Modulos y dependencias
 import { marked } from "marked";
 import { markedTerminal } from "marked-terminal"
-import { CopilotClient, defineTool, SessionConfig } from "@github/copilot-sdk";
+import { approveAll, CopilotClient, defineTool, SessionConfig } from "@github/copilot-sdk";
 import chalk from "chalk";
 import ora from "ora";
 import readline from "node:readline/promises";
@@ -104,6 +104,7 @@ copilotClient.start().then(() => {
 
 // ⚙️ Opciones de sesión (educativo: aquí puedes jugar con todo)
 const sessionOptions: SessionConfig = {
+    onPermissionRequest: approveAll,
     systemMessage: {
         content: `Eres un asistente que me ayuda a buscar vídeos en el canal de YouTube de returngis. Como parte de la respuesta debes incluir la fecha actual si te preguntan sobre videos.
 Para preguntas relacionadas con GitHub usa el MCP Server. Indica si has usado alguna tool para conseguir la respuesta y cuál ha sido.

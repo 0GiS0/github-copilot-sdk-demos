@@ -1,5 +1,5 @@
 // 📦 Importa el cliente del SDK de Copilot
-import { CopilotClient } from "@github/copilot-sdk";
+import { approveAll, CopilotClient } from "@github/copilot-sdk";
 // ⏱️ Spinner visual para esperas
 import ora from "ora";
 
@@ -18,7 +18,7 @@ const copilotClient = new CopilotClient({ logLevel: "all" });
 // - claude-opus-4.5 (3x)
 // - claude-sonnet-4 (1x)
 // - etc
-const copilotSession = await copilotClient.createSession({ model: "gpt-5.2" });
+const copilotSession = await copilotClient.createSession({ model: "gpt-5.2", onPermissionRequest: approveAll });
 
 // Con el Id de la sesión podemos continuar la conversación más adelante o en otro proceso.
 const copilotSessionId = copilotSession.sessionId; // 🧾 Guarda el ID para retomar luego
@@ -41,7 +41,7 @@ await copilotClient.stop();
 
 // 🔄 Para confirmar que podemos retomar la conversación más adelante
 const resumedCopilotClient = new CopilotClient({ logLevel: "all" });
-const resumedCopilotSession = await resumedCopilotClient.resumeSession(copilotSessionId);
+const resumedCopilotSession = await resumedCopilotClient.resumeSession(copilotSessionId, { onPermissionRequest: approveAll });
 
 const recapPrompt = `¿De qué habíamos hablado?`;
 const recapPromptSpinner = ora({ text: `⏳ Retomando conversación: "${formatPromptInline(recapPrompt)}"`, spinner: "dots" }).start();
